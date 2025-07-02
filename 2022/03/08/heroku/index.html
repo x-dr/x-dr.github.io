@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>使用 Heroku 部署免费 nodejs 后端服务 | 小东</title><meta name="author" content="小东"><meta name="copyright" content="小东"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="介绍也许你曾经使用过 github page 或者其他的静态网站托管服务部署自己的博客或者前端页面。但是只有前端还远远算不上一个网站。这篇文章就来介绍一下如何一分钱不花的部署一个后端服务。 我们使用的平台叫做 heroku，如果你没有听说过它的话，没有关系，heroku 是一个老牌的云平台提供商。你可以通过它非常简单的部署一个在线应用。并且只需要注册就可以领取一定量的免费服务器使用额度（截至到 2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Heroku 部署免费 nodejs 后端服务">
+<meta property="og:url" content="https://blog.amavv.com/2022/03/08/heroku/index.html">
+<meta property="og:site_name" content="小东">
+<meta property="og:description" content="介绍也许你曾经使用过 github page 或者其他的静态网站托管服务部署自己的博客或者前端页面。但是只有前端还远远算不上一个网站。这篇文章就来介绍一下如何一分钱不花的部署一个后端服务。 我们使用的平台叫做 heroku，如果你没有听说过它的话，没有关系，heroku 是一个老牌的云平台提供商。你可以通过它非常简单的部署一个在线应用。并且只需要注册就可以领取一定量的免费服务器使用额度（截至到 2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F1226%2F19f7d1edj00r4pwgg000ed200hu00aug00fi009e.jpg&thumbnail=660x2147483647&quality=80&type=jpg">
+<meta property="article:published_time" content="2022-03-08T14:01:44.000Z">
+<meta property="article:modified_time" content="2025-07-02T09:45:07.908Z">
+<meta property="article:author" content="小东">
+<meta property="article:tag" content="heroku">
+<meta property="article:tag" content="nodejs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F1226%2F19f7d1edj00r4pwgg000ed200hu00aug00fi009e.jpg&thumbnail=660x2147483647&quality=80&type=jpg"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/79109673?v=4"><link rel="canonical" href="https://blog.amavv.com/2022/03/08/heroku/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-V1FGL6FBM3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-V1FGL6FBM3');
+</script><!-- Matomo --><script>var _paq = window._paq = window._paq || [];
+/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+(function() {
+  var u="//ct.tryxd.cn/";
+  _paq.push(['setTrackerUrl', u+'matomo.php']);
+  _paq.push(['setSiteId', '5']);
+  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+  g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+})();</script><!-- End Matomo Code --><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用 Heroku 部署免费 nodejs 后端服务',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-07-02 17:45:07'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/ip.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/79109673?v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://nav.amavv.com"><i class="fa-fw fas fa-paper-plane"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cn.bing.com/th?id=OHR.ApisMellifera_EN-US1549924485_UHD.jpg&amp;pid=hp&amp;w=1920&amp;h=1080&amp;rs=1&amp;c=4')"><nav id="nav"><span id="blog-info"><a href="/" title="小东"><span class="site-name">小东</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://nav.amavv.com"><i class="fa-fw fas fa-paper-plane"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用 Heroku 部署免费 nodejs 后端服务</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-08T14:01:44.000Z" title="发表于 2022-03-08 22:01:44">2022-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-02T09:45:07.908Z" title="更新于 2025-07-02 17:45:07">2025-07-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="使用 Heroku 部署免费 nodejs 后端服务"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>也许你曾经使用过 github page 或者其他的静态网站托管服务部署自己的博客或者前端页面。但是只有前端还远远算不上一个网站。这篇文章就来介绍一下如何一分钱不花的部署一个后端服务。</p>
+<p>我们使用的平台叫做 heroku，如果你没有听说过它的话，没有关系，heroku 是一个老牌的云平台提供商。你可以通过它非常简单的部署一个在线应用。并且只需要注册就可以领取一定量的免费服务器使用额度（截至到 2021&#x2F;3&#x2F;26，heroku 提供的免费额度为 550 小时&#x2F;月），作为个人服务，这些时长已经足够我们使用的了。</p>
+<p>heroku 自我介绍<br>本文将介绍如何使用 heroku 部署一个 nodejs 后端服务，当然 heroku 还支持其他语言，你可以点击 <a target="_blank" rel="noopener" href="https://devcenter.heroku.com/start">这里</a>查看它所支持的所有编程语言。</p>
+<p>注册 &amp; 安装工具<br>现在我们就来准备一下需要的工具，首先我们打开 <a target="_blank" rel="noopener" href="https://signup.heroku.com/login">heroku - 注册</a> 来注册我们的账号。注意有可能存在网站打不开的情况，请自备梯子。注册完成后会让你进行邮箱验证，没什么好说的。</p>
+<p>注册完成之后我们就可以安装工具，想要部署 Heroku 应用，我们需要用到 heroku 命令行工具，你可以在 <a target="_blank" rel="noopener" href="https://devcenter.heroku.com/articles/getting-started-with-nodejs#set-up">这里</a> 找到下载链接。除了 heroku 之外，我们还需要用到 git 和 node，安装完成后我们在终端里执行如下命令来检查是否安装成功：</p>
+<h3 id="查看-heroku-是否安装完成"><a href="#查看-heroku-是否安装完成" class="headerlink" title="查看 heroku 是否安装完成"></a>查看 heroku 是否安装完成</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">heroku -v</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>heroku&#x2F;7.59.3 linux-x64 node-v12.21.0</p>
+</blockquote>
+<h3 id="查看-git-是否安装完成"><a href="#查看-git-是否安装完成" class="headerlink" title="查看 git 是否安装完成"></a>查看 git 是否安装完成</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git --version</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>git version 2.25.1</p>
+</blockquote>
+<h3 id="查看-node-是否安装完成"><a href="#查看-node-是否安装完成" class="headerlink" title="查看 node 是否安装完成"></a>查看 node 是否安装完成</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">node -v</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>v16.13.1<br>需要的工具都准备好了，我们在终端中执行如下命令来登录 heroku，登录时会要求提供邮箱密码，依次填写即可：</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">heroku login -i</span></span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">heroku: Enter your login credentials</span><br><span class="line">Email: your.email.here@gmail.com</span><br><span class="line">Password: *************</span><br><span class="line">Logged in as your.email.here@gmail.com</span><br></pre></td></tr></table></figure>
+<p>至此，我们的准备工作就已经全部完成了，下面就来部署我们的第一个应用：</p>
+<h3 id="部署第一个应用"><a href="#部署第一个应用" class="headerlink" title="部署第一个应用"></a>部署第一个应用</h3><p>首先，我们先准备要部署的应用，在终端中执行如下命令来拉取项目（这个项目是 heroku 提供的 node 部署示例 ）：</p>
+<h4 id="本地测试"><a href="#本地测试" class="headerlink" title="本地测试"></a>本地测试</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git <span class="built_in">clone</span> https://github.com/heroku/node-js-getting-started.git</span> </span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> node-js-getting-started</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">npm install</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">npm start</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="创建的应用"><a href="#创建的应用" class="headerlink" title="创建的应用"></a>创建的应用</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">heroku create</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Creating app... <span class="keyword">done</span>, ⬢ xxx-xxx-xxx</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">https://xxx-xxx-xxx.herokuapp.com/ | https://git.heroku.com/xxx-xxx-xxx.git</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>由于我们并没有指定名称，所以随机给我们分配了一个，本文的名字叫做 xxx-xxx-xxx。你也可以指定要创建的新服务名称，如 heroku create my-first-app，但是注意这个名字不能重名，否则会提示无法创建。</p>
+</li>
+<li><p>在部署之前我们先简单介绍一下， heroku 拥有一个远程的 git 仓库，在执行了 create 操作后，heroku 会在远程仓库中新建一个用于我们应用的专属仓库（上面输出中就可以看到 ），想要部署的时候我们只需要 往这个远程仓库中提交代码，keroku 就会自动根据配置运行构建并部署服务。</p>
+</li>
+<li><p>heroku 还会自动帮我们绑定这个远程仓库，我们可以通过 git remote -v 进行查看。并且，以后这个文件夹就是我们的服务管理目录了，只需要切换到这个目录中，执行的所有 heroku 命令都会自动使用当前应用作为目标。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git remote -v</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">heroku  https://git.heroku.com/xxx-xxx-xxx.git (fetch) &lt;--- 就是这两个</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">heroku  https://git.heroku.com/xxx-xxx-xxx.git (push)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">origin  git@github.com:heroku/node-js-getting-started.git (fetch)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">origin  git@github.com:heroku/node-js-getting-started.git (push)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>此时我们就可以通过 在线仪表盘 看到我们刚才创建的应用了。不过由于我们还没有上传任何代码，所以现在还无法访问服务。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="部署应用"><a href="#部署应用" class="headerlink" title="部署应用"></a>部署应用</h4><p>接下来我们就来部署应用，执行如下命令即可。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push heroku main</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里要注意推送的分支名要一致，如果你项目默认分支名为 master，这时就要把上面的 main 替换成 master。</p>
+</blockquote>
+<p>执行命令后我们就可以通过 remote 输出看到 heroku 执行了构建。等到上传完成后，我们的服务就已经准备好啦。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Enumerating objects: 541, <span class="keyword">done</span>.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Counting objects: 100% (541/541), <span class="keyword">done</span>.</span>   </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Delta compression using up to 8 threads</span>   </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Compressing objects: 100% (403/403), <span class="keyword">done</span>.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Writing objects: 100% (541/541), 245.22 KiB | 81.74 MiB/s, <span class="keyword">done</span>.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Total 541 (delta 102), reused 541 (delta 102), pack-reused 0</span>    </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: Compressing <span class="built_in">source</span> files... <span class="keyword">done</span>.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: Building <span class="built_in">source</span>:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote:</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: -----&gt; Building on the Heroku-20 stack</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: -----&gt; Determining <span class="built_in">which</span> buildpack to use <span class="keyword">for</span> this app</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: -----&gt; Node.js app detected</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="comment"># ...</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: -----&gt; Compressing...</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote:        Done: 32.8M</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: -----&gt; Launching...</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote:        Released v3</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote:        https://xxx-xxx-xxx.herokuapp.com/ deployed to Heroku</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">remote: Verifying deploy... <span class="keyword">done</span>.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">To https://git.heroku.com/xxx-xxx-xxx.git</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"> * [new branch]      main -&gt; main</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>部署完成后我们只需要执行如下命令启动服务即可：</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">heroku open</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>启动完成后会自动打开浏览器并访问我们的服务，这时候你应该就可以看到部署成功的网站啦：</p>
+</blockquote>
+<h4 id="部署完成的示例站点"><a href="#部署完成的示例站点" class="headerlink" title="部署完成的示例站点"></a>部署完成的示例站点</h4><p>是不是非常的简单，想要进行修改也很简单，我们打开 index.js，可以看到这个应用就是一个简单的 express 服务，我们新增一个 sayhello 接口并返回 hello world，修改完成后你的代码应该是这样子的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PORT</span> = process.<span class="property">env</span>.<span class="property">PORT</span> || <span class="number">5000</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">express</span>()</span><br><span class="line">  .<span class="title function_">use</span>(express.<span class="title function_">static</span>(path.<span class="title function_">join</span>(__dirname, <span class="string">&#x27;public&#x27;</span>)))</span><br><span class="line">  .<span class="title function_">set</span>(<span class="string">&#x27;views&#x27;</span>, path.<span class="title function_">join</span>(__dirname, <span class="string">&#x27;views&#x27;</span>))</span><br><span class="line">  .<span class="title function_">set</span>(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>)</span><br><span class="line">  .<span class="title function_">get</span>(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> res.<span class="title function_">render</span>(<span class="string">&#x27;pages/index&#x27;</span>))</span><br><span class="line">  .<span class="title function_">get</span>(<span class="string">&#x27;/sayhello&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> res.<span class="title function_">send</span>(<span class="string">&#x27;&lt;h1&gt;Hello World!&lt;/h1&gt;&#x27;</span>)) <span class="comment">// &lt;== 添加了这一行</span></span><br><span class="line">  .<span class="title function_">listen</span>(<span class="variable constant_">PORT</span>, <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Listening on <span class="subst">$&#123; PORT &#125;</span>`</span>))</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>然后我们正常的执行 git 提交操作，如下：</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git add .</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git commit -m <span class="string">&quot;feat: sayhello&quot;</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push heroku main</span></span><br></pre></td></tr></table></figure>
+<p>随后 heroku 就会开始编译并发布，等待发布完成后打开我们的站点，并在地址栏的末尾添加 &#x2F;sayhello，就可以看到我们的修改了的内容</p>
+<h4 id="heroku-的构建与发布"><a href="#heroku-的构建与发布" class="headerlink" title="heroku 的构建与发布"></a>heroku 的构建与发布</h4><blockquote>
+<p>当我们的 git 项目根目录下存在 package.json 文件时，heroku 就会认为这是一个 node 项目。如下：</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node-js-getting-started&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.3.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="attr">&quot;engines&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;node&quot;</span><span class="punctuation">:</span> <span class="string">&quot;14.x&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;ejs&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^3.1.5&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;express&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^4.17.1&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  ...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以看到其中包含了一个 engines 字段，heroku 将会使用对应的 node 版本对项目执行 <code>npm install</code> 来安装所需的依赖。安装完成后，heroku 会访问根目录中的 Procfile 来确定要执行什么命令来启动服务。你应该可以在项目根目录下找到如下内容的 Procfile：</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">web<span class="punctuation">:</span> npm start</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>它的意思是启动一个 web 进程，进程的服务启动命令为 npm start。注意这里的 web 很重要，它是一个固定的进程类型，当 heroku 识别到该类型时，它会把站点的 HTTP 流量 重定向到我们启动的服务进程中。heroku 还支持其他几种进程类型，你可以在 这里 找到它们。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>了解完 heroku 是如何启动我们的服务之后，我们来看一下当前服务运行的怎么样，在终端中输入 heroku ps 来进行查看：</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">heroku ps <span class="comment"># 或者 heroku ps -a 你的应用名</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Free dyno hours quota remaining this month: 474h 57m (86%)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Free dyno usage <span class="keyword">for</span> this app: 0h 0m (0%)</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">For more information on dyno sleeping and how to upgrade, see:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">https://devcenter.heroku.com/articles/dyno-sleeping</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"><span class="comment"># === web (Free): npm start (1)</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">web.1: up 2022/03/08 13:35:27 +0000 (~ 56m ago)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>输出内容的第一句话就告诉我们了 本月剩余的可用额度还有多少，可以看到我们现在还剩下 550 小时（100%），当我们的服务在响应请求时，额度就会被消耗，而当额度用完之后，我们的服务就会被强制关闭直到下个月才能重新恢复。你可以选择 绑定你的信用卡 来将免费额度提升至 1000 小时（具体数值见官网）。</p>
+</blockquote>
+<blockquote>
+<p>这里我们会接触到一个新名词：dyno，这个其实就是 heroku 自己的服务器容器，你可以将其简单理解成 docker 中的 container。下面是 heroku 自己对 dyno 的说明，你可以在 <a target="_blank" rel="noopener" href="https://devcenter.heroku.com/articles/dynos#cli-commands-for-dyno-management">这里</a> 找到它的完整介绍。</p>
+</blockquote>
+<hr>
+<p>我们可以通过命令来直接操作 dyno，例如当我们想要停止服务，就可以通过如下命令来“缩放” dyno 的数量，关闭之后该服务将不会继续消耗额度 ：</p>
+<blockquote>
+<p>把该应用的 web dyno 容器数量设置为 0</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">heroku ps:scale web=0</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>实际上，我们刚才执行 heroku open 时，heroku 就会自动帮我们启动一个免费的 dyno 容器，这个操作等同于手动执行了 <code>heroku ps:scale web=1。</code></p>
+</blockquote>
+<blockquote>
+<p>还有一件事，由于我们是免费账户，所以 每个服务只能最大只能启动一个 dyno 提供服务。并且，当一个 dyno 容器超过半个小时都没有收到新请求时，他就会被销毁。不过不用担心，如果有新请求时容器会被自动重启，重启时会有几秒钟的延迟。不过对于我们的 web 后端服务来说，这并不会造成什么影响。</p>
+</blockquote>
+<h3 id="其他常用命令"><a href="#其他常用命令" class="headerlink" title="其他常用命令"></a>其他常用命令</h3><blockquote>
+<p>除了上面介绍的命令外，heroku 还有下列常用命令：</p>
+</blockquote>
+<ul>
+<li><p>查看启动的服务日志：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">heroku logs --tail # 或者 heroku logs --tail -a 你的应用名</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动可以访问到实际项目文件的控制台：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">heroku run sh <span class="comment"># 或者 heroku run sh -a 你的应用名</span></span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/heroku/">heroku</a><a class="post-meta__tags" href="/tags/nodejs/">nodejs</a></div><div class="post_share"><div class="social-share" data-image="https://nimg.ws.126.net/?url=http%3A%2F%2Fdingyue.ws.126.net%2F2021%2F1226%2F19f7d1edj00r4pwgg000ed200hu00aug00fi009e.jpg&amp;thumbnail=660x2147483647&amp;quality=80&amp;type=jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/05/25/vim-1/" title="vim无法右键鼠标粘贴解决方法"><img class="cover" src="https://cn.bing.com/th?id=OHR.KornatiNP_EN-US0453245326_UHD.jpg&amp;pid=hp&amp;w=384&amp;h=216&amp;rs=1&amp;c=4" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">vim无法右键鼠标粘贴解决方法</div></div></a></div><div class="next-post pull-right"><a href="/2022/01/04/docker-docs/" title="Docker安装使用教程，以及常用命令!"><img class="cover" src="/../../img/all-hands-community.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Docker安装使用教程，以及常用命令!</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/79109673?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">小东</div><div class="author-info__description">知而不行，是为不知；行而不知，可以致知</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B-heroku-%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90"><span class="toc-number">2.</span> <span class="toc-text">查看 heroku 是否安装完成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B-git-%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90"><span class="toc-number">3.</span> <span class="toc-text">查看 git 是否安装完成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B-node-%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90"><span class="toc-number">4.</span> <span class="toc-text">查看 node 是否安装完成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%BA%94%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">部署第一个应用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%B5%8B%E8%AF%95"><span class="toc-number">5.1.</span> <span class="toc-text">本地测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">5.2.</span> <span class="toc-text">创建的应用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%BA%94%E7%94%A8"><span class="toc-number">5.3.</span> <span class="toc-text">部署应用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%AE%8C%E6%88%90%E7%9A%84%E7%A4%BA%E4%BE%8B%E7%AB%99%E7%82%B9"><span class="toc-number">5.4.</span> <span class="toc-text">部署完成的示例站点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#heroku-%E7%9A%84%E6%9E%84%E5%BB%BA%E4%B8%8E%E5%8F%91%E5%B8%83"><span class="toc-number">5.5.</span> <span class="toc-text">heroku 的构建与发布</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">6.</span> <span class="toc-text">其他常用命令</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/01/16/opwnert/" title="docker安装opwnert"><img src="/../../img/all-hands-community.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="docker安装opwnert"/></a><div class="content"><a class="title" href="/2025/01/16/opwnert/" title="docker安装opwnert">docker安装opwnert</a><time datetime="2025-01-16T19:20:37.000Z" title="发表于 2025-01-17 03:20:37">2025-01-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/30/bitwardenrs/" title="使用bitwarden_rs搭建自己的密码管理器"><img src="https://img1.131213.xyz/file/d2f82c95c0f83fe163324.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用bitwarden_rs搭建自己的密码管理器"/></a><div class="content"><a class="title" href="/2023/08/30/bitwardenrs/" title="使用bitwarden_rs搭建自己的密码管理器">使用bitwarden_rs搭建自己的密码管理器</a><time datetime="2023-08-30T09:33:23.000Z" title="发表于 2023-08-30 17:33:23">2023-08-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/29/openresty/" title="利用 openresty 打造 IP 地址查询接口"><img src="https://openresty.org/images/logo.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用 openresty 打造 IP 地址查询接口"/></a><div class="content"><a class="title" href="/2023/08/29/openresty/" title="利用 openresty 打造 IP 地址查询接口">利用 openresty 打造 IP 地址查询接口</a><time datetime="2023-08-29T09:51:06.000Z" title="发表于 2023-08-29 17:51:06">2023-08-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/26/so-vits-svc/" title="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程"><img src="https://cn.bing.com/th?id=OHR.EmeraldLakeYukon_EN-US0522450551_UHD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程"/></a><div class="content"><a class="title" href="/2023/08/26/so-vits-svc/" title="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程">手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程</a><time datetime="2023-08-26T14:56:31.000Z" title="发表于 2023-08-26 22:56:31">2023-08-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/22/posteio-mail/" title="自建邮局 | Poste.io邮箱服务搭建教程"><img src="https://poste.io/screenshots2/a1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="自建邮局 | Poste.io邮箱服务搭建教程"/></a><div class="content"><a class="title" href="/2023/08/22/posteio-mail/" title="自建邮局 | Poste.io邮箱服务搭建教程">自建邮局 | Poste.io邮箱服务搭建教程</a><time datetime="2023-08-22T13:35:40.000Z" title="发表于 2023-08-22 21:35:40">2023-08-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 小东</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'd354bfe7aaec729477ae',
+      clientSecret: '6947f63a2276eabc0c022e4ab6a3177194ff6046',
+      repo: 'gitalk-comment',
+      owner: 'x-dr',
+      admin: ['x-dr'],
+      id: '5e4600b09f13bf3a505cf1f1787c6a23',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="/js/ip_content.js"></script><script src="/js/title.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>自建邮局 | Poste.io邮箱服务搭建教程 | 小东</title><meta name="author" content="小东"><meta name="copyright" content="小东"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="介绍poste.io 邮件服务基于 Docker 搭建，用的是 Haraka + Dovecot + SQLite 邮件系统，能够轻易实现邮件收发、多域名控制、邮箱容量控制、邮件杀毒、邮件过滤以及 Webmail 等基础功能。同时，Poste 还提供了投递统计分析、客户端自动适配、一键安装SSL、邮件转发、邮件别名、Catch-All 等相当有用的功能。 快速安装 poste.io原生支持dock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自建邮局 | Poste.io邮箱服务搭建教程">
+<meta property="og:url" content="https://blog.amavv.com/2023/08/22/posteio-mail/index.html">
+<meta property="og:site_name" content="小东">
+<meta property="og:description" content="介绍poste.io 邮件服务基于 Docker 搭建，用的是 Haraka + Dovecot + SQLite 邮件系统，能够轻易实现邮件收发、多域名控制、邮箱容量控制、邮件杀毒、邮件过滤以及 Webmail 等基础功能。同时，Poste 还提供了投递统计分析、客户端自动适配、一键安装SSL、邮件转发、邮件别名、Catch-All 等相当有用的功能。 快速安装 poste.io原生支持dock">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://poste.io/screenshots2/a1.png">
+<meta property="article:published_time" content="2023-08-22T13:35:40.000Z">
+<meta property="article:modified_time" content="2025-07-02T09:45:07.908Z">
+<meta property="article:author" content="小东">
+<meta property="article:tag" content="mail">
+<meta property="article:tag" content="邮箱">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://poste.io/screenshots2/a1.png"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/79109673?v=4"><link rel="canonical" href="https://blog.amavv.com/2023/08/22/posteio-mail/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-V1FGL6FBM3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-V1FGL6FBM3');
+</script><!-- Matomo --><script>var _paq = window._paq = window._paq || [];
+/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+(function() {
+  var u="//ct.tryxd.cn/";
+  _paq.push(['setTrackerUrl', u+'matomo.php']);
+  _paq.push(['setSiteId', '5']);
+  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+  g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+})();</script><!-- End Matomo Code --><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '自建邮局 | Poste.io邮箱服务搭建教程',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-07-02 17:45:07'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/ip.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/79109673?v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://nav.amavv.com"><i class="fa-fw fas fa-paper-plane"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://poste.io/screenshots2/a1.png')"><nav id="nav"><span id="blog-info"><a href="/" title="小东"><span class="site-name">小东</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://nav.amavv.com"><i class="fa-fw fas fa-paper-plane"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">自建邮局 | Poste.io邮箱服务搭建教程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-22T13:35:40.000Z" title="发表于 2023-08-22 21:35:40">2023-08-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-02T09:45:07.908Z" title="更新于 2025-07-02 17:45:07">2025-07-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="自建邮局 | Poste.io邮箱服务搭建教程"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><a target="_blank" rel="noopener" href="https://poste.io/">poste.io</a> 邮件服务基于 Docker 搭建，用的是 Haraka + Dovecot + SQLite 邮件系统，能够轻易实现邮件收发、多域名控制、邮箱容量控制、邮件杀毒、邮件过滤以及 Webmail 等基础功能。同时，Poste 还提供了投递统计分析、客户端自动适配、一键安装SSL、邮件转发、邮件别名、Catch-All 等相当有用的功能。</p>
+<h3 id="快速安装"><a href="#快速安装" class="headerlink" title="快速安装"></a>快速安装</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://poste.io/">poste.io</a>原生支持docker，占用资源较少，安装简单，适合个人使用。</p>
+</blockquote>
+<h4 id="dns配置"><a href="#dns配置" class="headerlink" title="dns配置"></a>dns配置</h4><blockquote>
+<p>为了能够正常使用邮件服务，需要配置域名的 MX 记录，将邮件服务器的地址指向你的域名。下文以<code>mail.your-domain.com</code>为例。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">记录类型</th>
+<th align="center">主机记录</th>
+<th align="center">记录值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">MX</td>
+<td align="center">your-domain.com</td>
+<td align="center">mail.your-domain.com</td>
+</tr>
+<tr>
+<td align="center">TXT</td>
+<td align="center">your-domain.com</td>
+<td align="center">v&#x3D;spf1 mx ~all</td>
+</tr>
+<tr>
+<td align="center">A</td>
+<td align="center">mail</td>
+<td align="center">1.2.3.4 (your ip)</td>
+</tr>
+<tr>
+<td align="center">TXT</td>
+<td align="center">_dmarc</td>
+<td align="center">v&#x3D;DMARC1; p&#x3D;none; pct&#x3D;100; rua&#x3D;mailto:<a href="mailto:&#x6d;&#97;&#x69;&#x6c;&#64;&#x79;&#x6f;&#117;&#x72;&#x2d;&#100;&#x6f;&#109;&#97;&#x69;&#110;&#46;&#x63;&#x6f;&#x6d;">&#x6d;&#97;&#x69;&#x6c;&#64;&#x79;&#x6f;&#117;&#x72;&#x2d;&#100;&#x6f;&#109;&#97;&#x69;&#110;&#46;&#x63;&#x6f;&#x6d;</a></td>
+</tr>
+<tr>
+<td align="center">CNAME</td>
+<td align="center">imap</td>
+<td align="center">mail</td>
+</tr>
+<tr>
+<td align="center">CNAME</td>
+<td align="center">smtp</td>
+<td align="center">mail</td>
+</tr>
+<tr>
+<td align="center">CNAME</td>
+<td align="center">pop</td>
+<td align="center">mail</td>
+</tr>
+<tr>
+<td align="center">TXT</td>
+<td align="center">_s20160910378._domainkey.your-domain.com</td>
+<td align="center">k&#x3D;rsa;p&#x3D;MII………</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>最后还需要到 VPS 服务商处添加一个反向 DNS，也就是 rDNS 解析，把 IP 解析到 mail.your-domain.com 这个邮件域名就好了，这个为可选项，有些 VPS 商家不提供这种服务。</p>
+</blockquote>
+<p><img src="/../img/posteio/posteio2.png" alt="posteio"></p>
+<blockquote>
+<p>以上 DNS 解析，至少需要添加前面三个 A 解析和 MX 解析，后面几个解析为可选，不添加也能用。</p>
+</blockquote>
+<h4 id="修改VPS-hostname"><a href="#修改VPS-hostname" class="headerlink" title="修改VPS hostname"></a>修改VPS hostname</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hostnamectl set-hostname mail.your-domain.com</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改hosts文件</span></span><br><span class="line">vim /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加一行</span></span><br><span class="line">127.0.1.1 localhost.localdomain mail.your-domain.com</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装docker</span></span><br><span class="line">curl -sSL https://get.docker.com/ | sh</span><br><span class="line"><span class="comment"># 启动docker</span></span><br><span class="line">systemctl start docker</span><br><span class="line"><span class="comment"># 设置开机启动</span></span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装poste-io"><a href="#安装poste-io" class="headerlink" title="安装poste.io"></a>安装poste.io</h4><blockquote>
+<p>用docker compose安装,在要部署<code>poste.io</code>的目录下创建docker-compose.yml文件</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.7&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">mailserver:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">analogic/poste.io</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">mail.your-domain.com</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;25:25&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;110:110&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;143:143&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;587:587&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;993:993&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;995:995&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;4190:4190&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;465:465&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8808:80&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8843:443&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">LETSENCRYPT_EMAIL=admin@your-domain.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">LETSENCRYPT_HOST=mail.your-domain.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">VIRTUAL_HOST=mail.your-domain.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">DISABLE_CLAMAV=TRUE</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">HTTPS=OFF</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mail-data:/data</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>服务</th>
+<th>端口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SMTP</td>
+<td>25</td>
+<td>SMTP 服务端口</td>
+</tr>
+<tr>
+<td>IMAP</td>
+<td>143</td>
+<td>IMAP 服务端口</td>
+</tr>
+<tr>
+<td>POP3</td>
+<td>110</td>
+<td>POP3 服务端口</td>
+</tr>
+<tr>
+<td>SMTPS</td>
+<td>465</td>
+<td>SMTPS 服务端口</td>
+</tr>
+<tr>
+<td>IMAPS</td>
+<td>993</td>
+<td>IMAPS 服务端口</td>
+</tr>
+<tr>
+<td>POP3S</td>
+<td>995</td>
+<td>POP3S 服务端口</td>
+</tr>
+<tr>
+<td>MSA</td>
+<td>587</td>
+<td>SMTP 端口主要由电子邮件客户端在 STARTTLS 和身份验证之后使用</td>
+</tr>
+<tr>
+<td>Sieve</td>
+<td>4190</td>
+<td>远程筛子设置</td>
+</tr>
+<tr>
+<td>Webmail</td>
+<td>8808</td>
+<td>Webmail 服务端口</td>
+</tr>
+<tr>
+<td>Webmail</td>
+<td>8843</td>
+<td>Webmail 服务端口</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>请注意修改里面的域名和存储路径。</p>
+</blockquote>
+<blockquote>
+<p>禁用反病毒功能（DISABLE_CLAMAV&#x3D;TRUE）、禁用反垃圾邮件功能（DISABLE_RSPAMD&#x3D;TRUE），可以大幅减低内存和CPU占用，请酌情设置禁用选项。</p>
+</blockquote>
+<blockquote>
+<p>禁用WEB收发功能（DISABLE_ROUNDCUBE&#x3D;TRUE），可以进一步减少资源占用，不过非必要不建议禁止。</p>
+</blockquote>
+<blockquote>
+<p><code>8808</code>为http端口，可以根据自己的需求修改。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动poste.io</span></span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="配置NGINX反向代理"><a href="#配置NGINX反向代理" class="headerlink" title="配置NGINX反向代理"></a>配置NGINX反向代理</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">upstream poste_backend &#123;</span><br><span class="line">    server 127.0.0.1:8808;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen 443 ssl http2;</span><br><span class="line">    server_name mail.your-domain.com;</span><br><span class="line">    ssl_certificate /etc/nginx/conf.d/ssl/cert.pem;</span><br><span class="line">    ssl_certificate_key /etc/nginx/conf.d/ssl/key.pem;</span><br><span class="line">    ssl_session_timeout 5m;</span><br><span class="line">    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;</span><br><span class="line">    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    ssl_prefer_server_ciphers on;</span><br><span class="line">    add_header Strict-Transport-Security <span class="string">&quot;max-age=31536000; includeSubdomains;&quot;</span>;</span><br><span class="line">    access_log /var/log/nginx/mail.log main;</span><br><span class="line"></span><br><span class="line">    location ^~ /.well-known &#123;</span><br><span class="line">        proxy_pass http://poste_backend;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_pass http://poste_backend;</span><br><span class="line">        proxy_set_header Host <span class="variable">$host</span>;</span><br><span class="line">        proxy_intercept_errors off;</span><br><span class="line">        <span class="comment"># real-ip</span></span><br><span class="line">        proxy_set_header X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">        proxy_set_header X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        proxy_set_header REMOTE-HOST <span class="variable">$remote_addr</span>;</span><br><span class="line">        proxy_set_header X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># websocket</span></span><br><span class="line">        proxy_set_header Upgrade <span class="variable">$http_upgrade</span>;</span><br><span class="line">        proxy_set_header Connection <span class="string">&#x27;upgrade&#x27;</span>;</span><br><span class="line">        proxy_read_timeout 86400;</span><br><span class="line">     </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    error_page   500 502 503 504  /50x.html;</span><br><span class="line">    location = /50x.html &#123;</span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$server_port</span> = 80 ) &#123;</span><br><span class="line">        <span class="built_in">return</span> 301 https://$host<span class="variable">$request_uri</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="配置poste-io"><a href="#配置poste-io" class="headerlink" title="配置poste.io"></a>配置poste.io</h4><blockquote>
+<p>通过浏览器访问<code>https://mail.your-domain.com</code>，进入poste.io的配置页面，按照提示进行配置即可。</p>
+</blockquote>
+<ol>
+<li>1、设置管理员账户以及密码，然后进入后台管理页面。</li>
+</ol>
+<p><img src="/../img/posteio/a1.png" alt="posteio"></p>
+<ol start="2">
+<li>配置 Let’s Encrypt 证书。</li>
+</ol>
+<p><img src="/../img/posteio/posteio3.png" alt="posteio"><br><img src="/../img/posteio/posteio4.png" alt="posteio"></p>
+<ol start="3">
+<li>创建 dkim 密钥，生成 key，添加到 DNS 解析记录，就是上面最后一条解析 _s20160910378._domainkey.your-domain.com</li>
+</ol>
+<blockquote>
+<p>左侧点击 Virtual domains 然后点击域名进行配置。</p>
+</blockquote>
+<blockquote>
+<p>点击 DKIM keys，然后点击 Generate new key，生成 key，添加到 DNS 解析记录，就是上面最后一条解析 _s20160910378._domainkey.your-domain.com</p>
+</blockquote>
+<p><img src="/../img/posteio/posteio5.png" alt="posteio"></p>
+<h3 id="配置邮件客户端"><a href="#配置邮件客户端" class="headerlink" title="配置邮件客户端"></a>配置邮件客户端</h3><blockquote>
+<p>第三方客户端 <code>SMTP/IMAP/POP3</code> 配置</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>协议</th>
+<th>服务器地址</th>
+<th>端口</th>
+<th>SSL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SMTP</td>
+<td>mail.your-domain.com,smtp.your-domain.com</td>
+<td>25, 465, 587</td>
+<td>STARTTLS</td>
+</tr>
+<tr>
+<td>IMAP</td>
+<td>mail.your-domain.com,imap.your-domain.com</td>
+<td>993, 143</td>
+<td>STARTTLS</td>
+</tr>
+<tr>
+<td>POP3</td>
+<td>mail.your-domain.com,pop.your-domain.com</td>
+<td>995, 110</td>
+<td>STARTTLS</td>
+</tr>
+</tbody></table>
+<p>参考：<a target="_blank" rel="noopener" href="https://poste.io/doc">https://poste.io/doc</a></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/mail/">mail</a><a class="post-meta__tags" href="/tags/%E9%82%AE%E7%AE%B1/">邮箱</a></div><div class="post_share"><div class="social-share" data-image="https://poste.io/screenshots2/a1.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/08/26/so-vits-svc/" title="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程"><img class="cover" src="https://cn.bing.com/th?id=OHR.EmeraldLakeYukon_EN-US0522450551_UHD.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/20/stable-diffusion/" title="显卡跑不动AI绘图？部署Stable Diffusion WebUI到Google Colab教学。"><img class="cover" src="https://cn.bing.com/th?id=OHR.LionessesNap_EN-US6947230556_UHD.jpg&amp;pid=hp&amp;w=384&amp;h=216&amp;rs=1&amp;c=4" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">显卡跑不动AI绘图？部署Stable Diffusion WebUI到Google Colab教学。</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/79109673?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">小东</div><div class="author-info__description">知而不行，是为不知；行而不知，可以致知</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85"><span class="toc-number">2.</span> <span class="toc-text">快速安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dns%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.</span> <span class="toc-text">dns配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9VPS-hostname"><span class="toc-number">2.2.</span> <span class="toc-text">修改VPS hostname</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85docker"><span class="toc-number">2.3.</span> <span class="toc-text">安装docker</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85poste-io"><span class="toc-number">2.4.</span> <span class="toc-text">安装poste.io</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AENGINX%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-number">2.5.</span> <span class="toc-text">配置NGINX反向代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEposte-io"><span class="toc-number">2.6.</span> <span class="toc-text">配置poste.io</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E9%82%AE%E4%BB%B6%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">3.</span> <span class="toc-text">配置邮件客户端</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/01/16/opwnert/" title="docker安装opwnert"><img src="/../../img/all-hands-community.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="docker安装opwnert"/></a><div class="content"><a class="title" href="/2025/01/16/opwnert/" title="docker安装opwnert">docker安装opwnert</a><time datetime="2025-01-16T19:20:37.000Z" title="发表于 2025-01-17 03:20:37">2025-01-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/30/bitwardenrs/" title="使用bitwarden_rs搭建自己的密码管理器"><img src="https://img1.131213.xyz/file/d2f82c95c0f83fe163324.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用bitwarden_rs搭建自己的密码管理器"/></a><div class="content"><a class="title" href="/2023/08/30/bitwardenrs/" title="使用bitwarden_rs搭建自己的密码管理器">使用bitwarden_rs搭建自己的密码管理器</a><time datetime="2023-08-30T09:33:23.000Z" title="发表于 2023-08-30 17:33:23">2023-08-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/29/openresty/" title="利用 openresty 打造 IP 地址查询接口"><img src="https://openresty.org/images/logo.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用 openresty 打造 IP 地址查询接口"/></a><div class="content"><a class="title" href="/2023/08/29/openresty/" title="利用 openresty 打造 IP 地址查询接口">利用 openresty 打造 IP 地址查询接口</a><time datetime="2023-08-29T09:51:06.000Z" title="发表于 2023-08-29 17:51:06">2023-08-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/26/so-vits-svc/" title="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程"><img src="https://cn.bing.com/th?id=OHR.EmeraldLakeYukon_EN-US0522450551_UHD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程"/></a><div class="content"><a class="title" href="/2023/08/26/so-vits-svc/" title="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程">手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程</a><time datetime="2023-08-26T14:56:31.000Z" title="发表于 2023-08-26 22:56:31">2023-08-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/22/posteio-mail/" title="自建邮局 | Poste.io邮箱服务搭建教程"><img src="https://poste.io/screenshots2/a1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="自建邮局 | Poste.io邮箱服务搭建教程"/></a><div class="content"><a class="title" href="/2023/08/22/posteio-mail/" title="自建邮局 | Poste.io邮箱服务搭建教程">自建邮局 | Poste.io邮箱服务搭建教程</a><time datetime="2023-08-22T13:35:40.000Z" title="发表于 2023-08-22 21:35:40">2023-08-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 小东</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'd354bfe7aaec729477ae',
+      clientSecret: '6947f63a2276eabc0c022e4ab6a3177194ff6046',
+      repo: 'gitalk-comment',
+      owner: 'x-dr',
+      admin: ['x-dr'],
+      id: '89ad68a454ab3860b95e2a8b0ff35d0c',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="/js/ip_content.js"></script><script src="/js/title.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

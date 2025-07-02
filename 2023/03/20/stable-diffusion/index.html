@@ -1,0 +1,264 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>显卡跑不动AI绘图？部署Stable Diffusion WebUI到Google Colab教学。 | 小东</title><meta name="author" content="小东"><meta name="copyright" content="小东"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="如果你的电脑GPU无法运行AI绘图&#x2F;模型训练，可以尝试使用Google Colab在线运行Stable Diffsuion WebUI，基本上是免费的。 Google Colab是一个免费的工具，但使用免费版需要与其他人共享资源，并且有可能会不定时断开连接。 使用方法与在自己电脑上运行Stable Diffsuion WebUI相同，不同之处在于它在Google服务器上运行，并且即使是免">
+<meta property="og:type" content="article">
+<meta property="og:title" content="显卡跑不动AI绘图？部署Stable Diffusion WebUI到Google Colab教学。">
+<meta property="og:url" content="https://blog.amavv.com/2023/03/20/stable-diffusion/index.html">
+<meta property="og:site_name" content="小东">
+<meta property="og:description" content="如果你的电脑GPU无法运行AI绘图&#x2F;模型训练，可以尝试使用Google Colab在线运行Stable Diffsuion WebUI，基本上是免费的。 Google Colab是一个免费的工具，但使用免费版需要与其他人共享资源，并且有可能会不定时断开连接。 使用方法与在自己电脑上运行Stable Diffsuion WebUI相同，不同之处在于它在Google服务器上运行，并且即使是免">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cn.bing.com/th?id=OHR.LionessesNap_EN-US6947230556_UHD.jpg&pid=hp&w=384&h=216&rs=1&c=4">
+<meta property="article:published_time" content="2023-03-20T20:44:52.000Z">
+<meta property="article:modified_time" content="2025-07-02T09:45:07.909Z">
+<meta property="article:author" content="小东">
+<meta property="article:tag" content="Google Colab">
+<meta property="article:tag" content="Stable Diffusion WebUI">
+<meta property="article:tag" content="AI 绘画">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cn.bing.com/th?id=OHR.LionessesNap_EN-US6947230556_UHD.jpg&pid=hp&w=384&h=216&rs=1&c=4"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/79109673?v=4"><link rel="canonical" href="https://blog.amavv.com/2023/03/20/stable-diffusion/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-V1FGL6FBM3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-V1FGL6FBM3');
+</script><!-- Matomo --><script>var _paq = window._paq = window._paq || [];
+/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+(function() {
+  var u="//ct.tryxd.cn/";
+  _paq.push(['setTrackerUrl', u+'matomo.php']);
+  _paq.push(['setSiteId', '5']);
+  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+  g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+})();</script><!-- End Matomo Code --><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '显卡跑不动AI绘图？部署Stable Diffusion WebUI到Google Colab教学。',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-07-02 17:45:07'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/ip.css"><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/79109673?v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://nav.amavv.com"><i class="fa-fw fas fa-paper-plane"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cn.bing.com/th?id=OHR.LionessesNap_EN-US6947230556_UHD.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="小东"><span class="site-name">小东</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://nav.amavv.com"><i class="fa-fw fas fa-paper-plane"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">显卡跑不动AI绘图？部署Stable Diffusion WebUI到Google Colab教学。</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-20T20:44:52.000Z" title="发表于 2023-03-21 04:44:52">2023-03-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-02T09:45:07.909Z" title="更新于 2025-07-02 17:45:07">2025-07-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">715</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="显卡跑不动AI绘图？部署Stable Diffusion WebUI到Google Colab教学。"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>如果你的电脑GPU无法运行AI绘图&#x2F;模型训练，可以尝试使用Google Colab在线运行Stable Diffsuion WebUI，基本上是免费的。</p>
+<p>Google Colab是一个免费的工具，但使用免费版需要与其他人共享资源，并且有可能会不定时断开连接。</p>
+<p>使用方法与在自己电脑上运行Stable Diffsuion WebUI相同，不同之处在于它在Google服务器上运行，并且即使是免费版也能享受比RTX3090还高的服务器GPU性能，在10秒内就能计算一张图片。</p>
+<h3 id="1、寻找Stable-Diffsuion-Colab"><a href="#1、寻找Stable-Diffsuion-Colab" class="headerlink" title="1、寻找Stable Diffsuion Colab"></a>1、寻找Stable Diffsuion Colab</h3><p>Stable Diffusion WebUI有很多人已经写好了方便使用的<code>jupyter</code>了，通常只需要一键操作就能自动下载AUTOMATIC1111制作的WebUI、模型和扩展功能。</p>
+<p>本文所采用的是<code>camenduru</code>编写的<a target="_blank" rel="noopener" href="https://github.com/camenduru/stable-diffusion-webui-colab">stable-diffusion-webui-colab</a> <code>jupyter</code>，作者一直在更新。除了绘图外，它还可以用于训练模型。</p>
+<p>Linaqruf制作的<a target="_blank" rel="noopener" href="https://github.com/Linaqruf/kohya-trainer">kohya-trainer</a>则是专门用来训练LoRA模型的<code>jupyter</code>。</p>
+<h3 id="2、部署Stable-Diffusion-WebUI"><a href="#2、部署Stable-Diffusion-WebUI" class="headerlink" title="2、部署Stable Diffusion WebUI"></a>2、部署Stable Diffusion WebUI</h3><ol>
+<li>在Github上选择要使用的<code>jupyter</code>，例如生成高清真实人像<code>Chilloutmix</code>模型，然后点击左侧的<code>stable</code> (稳定版)。作者<code>main</code>分支的笔记本不会占用云存储空间，所有文件都是在运行时才下载，并且使用完毕即可删除。</li>
+</ol>
+<p><img src="/../img/stable_diffusion/Chilloutmix.png" alt="Chilloutmix"></p>
+<p>你也可以选择使用<code>Drive</code>分支的<code>jupyter</code>，它会把程序和模型存储在你的谷歌云盘中。这样就能保存上次进度，下次打开也会更快。但是需要至少5GB空间来存放程序和模型，以此作为代价。</p>
+<ol start="2">
+<li>点击笔记本后会跳转到Google Colab的页面，然后点击右上角的<code>连接</code>按钮以连接服务器。</li>
+</ol>
+<p><img src="/../img/stable_diffusion/Stable_Diffusion1.png" alt="Stable Diffusion"></p>
+<ol start="3">
+<li>点选上方的选→代码执行程序→更改运行时类型，确认目前硬件加速器是使用GPU。</li>
+</ol>
+<p><img src="/../img/stable_diffusion/Stable_Diffusion2.png" alt="Stable Diffusion"></p>
+<ol start="4">
+<li>点选左上角，执行。</li>
+</ol>
+<p><img src="/../img/stable_diffusion/Stable_Diffusion3.png" alt="Stable Diffusion"></p>
+<ol start="5">
+<li><p>接着会部署环境和下载模型，通常5分钟就跑完了。 </p>
+</li>
+<li><p>页面往下滑会看到系统输出。它会显示一组网址，点选Gradio或者Cloudflare的链接进入WebUI (链接72小时后失效，但Google Colab免费版最长运行时间为12小时)</p>
+</li>
+</ol>
+<p><img src="/../img/stable_diffusion/Stable_Diffusion4.png" alt="Stable Diffusion"></p>
+<ol start="7">
+<li>进入WebUI后，用法跟本机部署的Stable Diffsusion一样。</li>
+</ol>
+<p><img src="/../img/stable_diffusion/Stable_Diffusion5.png" alt="Stable Diffusion"></p>
+<blockquote>
+<p>想换成亮色界面请将网址dark改成light即可。</p>
+</blockquote>
+<h3 id="3、下载图片"><a href="#3、下载图片" class="headerlink" title="3、下载图片"></a>3、下载图片</h3><p>Google Colab在关闭工作流后会清空文件，因此绘制的图片记得要及时保存。</p>
+<ol>
+<li>左边的文件夹图标。绘制的图片会存在<code>stable-diffusion-webui/outputs</code>文件夹下，右键选中可下载图片。</li>
+</ol>
+<p><img src="/../img/stable_diffusion/Stable_Diffusion7.png" alt="Stable Diffusion"></p>
+<ol start="2">
+<li>批量下载</li>
+</ol>
+<p>点击<code>+代码</code>添加下面代码，打包生成的图片</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">＃您可以在/content/generated.zip中下载生成的图像</span><br><span class="line">!zip -r /content/generated.zip /content/stable-diffusion-webui/outputs/</span><br></pre></td></tr></table></figure>
+
+<p>先暂停Stable Diffusion后 如下图点击开始图标即可生成<code>generated.zip</code>图片压缩包</p>
+<p><img src="/../img/stable_diffusion/Stable_Diffusion6.png" alt="Stable Diffusion"></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Google-Colab/">Google Colab</a><a class="post-meta__tags" href="/tags/Stable-Diffusion-WebUI/">Stable Diffusion WebUI</a><a class="post-meta__tags" href="/tags/AI-%E7%BB%98%E7%94%BB/">AI 绘画</a></div><div class="post_share"><div class="social-share" data-image="https://cn.bing.com/th?id=OHR.LionessesNap_EN-US6947230556_UHD.jpg&amp;pid=hp&amp;w=384&amp;h=216&amp;rs=1&amp;c=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/08/22/posteio-mail/" title="自建邮局 | Poste.io邮箱服务搭建教程"><img class="cover" src="https://poste.io/screenshots2/a1.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">自建邮局 | Poste.io邮箱服务搭建教程</div></div></a></div><div class="next-post pull-right"><a href="/2023/03/11/windows-terminal/" title="Windows Terminal美化"><img class="cover" src="https://user-images.githubusercontent.com/48369326/115790869-4c852b00-a37c-11eb-97f1-f61972c7800c.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Windows Terminal美化</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/79109673?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">小东</div><div class="author-info__description">知而不行，是为不知；行而不知，可以致知</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E5%AF%BB%E6%89%BEStable-Diffsuion-Colab"><span class="toc-number">1.</span> <span class="toc-text">1、寻找Stable Diffsuion Colab</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E9%83%A8%E7%BD%B2Stable-Diffusion-WebUI"><span class="toc-number">2.</span> <span class="toc-text">2、部署Stable Diffusion WebUI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E4%B8%8B%E8%BD%BD%E5%9B%BE%E7%89%87"><span class="toc-number">3.</span> <span class="toc-text">3、下载图片</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/01/16/opwnert/" title="docker安装opwnert"><img src="/../../img/all-hands-community.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="docker安装opwnert"/></a><div class="content"><a class="title" href="/2025/01/16/opwnert/" title="docker安装opwnert">docker安装opwnert</a><time datetime="2025-01-16T19:20:37.000Z" title="发表于 2025-01-17 03:20:37">2025-01-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/30/bitwardenrs/" title="使用bitwarden_rs搭建自己的密码管理器"><img src="https://img1.131213.xyz/file/d2f82c95c0f83fe163324.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用bitwarden_rs搭建自己的密码管理器"/></a><div class="content"><a class="title" href="/2023/08/30/bitwardenrs/" title="使用bitwarden_rs搭建自己的密码管理器">使用bitwarden_rs搭建自己的密码管理器</a><time datetime="2023-08-30T09:33:23.000Z" title="发表于 2023-08-30 17:33:23">2023-08-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/29/openresty/" title="利用 openresty 打造 IP 地址查询接口"><img src="https://openresty.org/images/logo.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用 openresty 打造 IP 地址查询接口"/></a><div class="content"><a class="title" href="/2023/08/29/openresty/" title="利用 openresty 打造 IP 地址查询接口">利用 openresty 打造 IP 地址查询接口</a><time datetime="2023-08-29T09:51:06.000Z" title="发表于 2023-08-29 17:51:06">2023-08-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/26/so-vits-svc/" title="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程"><img src="https://cn.bing.com/th?id=OHR.EmeraldLakeYukon_EN-US0522450551_UHD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程"/></a><div class="content"><a class="title" href="/2023/08/26/so-vits-svc/" title="手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程">手把手教学！如何自己训练一个AI歌手 - so-vits-svc云端训练教程</a><time datetime="2023-08-26T14:56:31.000Z" title="发表于 2023-08-26 22:56:31">2023-08-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/22/posteio-mail/" title="自建邮局 | Poste.io邮箱服务搭建教程"><img src="https://poste.io/screenshots2/a1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="自建邮局 | Poste.io邮箱服务搭建教程"/></a><div class="content"><a class="title" href="/2023/08/22/posteio-mail/" title="自建邮局 | Poste.io邮箱服务搭建教程">自建邮局 | Poste.io邮箱服务搭建教程</a><time datetime="2023-08-22T13:35:40.000Z" title="发表于 2023-08-22 21:35:40">2023-08-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 小东</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'd354bfe7aaec729477ae',
+      clientSecret: '6947f63a2276eabc0c022e4ab6a3177194ff6046',
+      repo: 'gitalk-comment',
+      owner: 'x-dr',
+      admin: ['x-dr'],
+      id: '00efd106e913bdc7df6ca691c288b1cb',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script src="/js/ip_content.js"></script><script src="/js/title.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
